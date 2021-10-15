@@ -11,6 +11,6 @@ namespace BugTracker.Core.Entities
         public string Name { get; set; } = string.Empty;
         public string LogoURL { get; set; } = string.Empty;
 
-        public ICollection<AppDev>? AppDevs { get; set; } = new HashSet<AppDev>();
+        public ICollection<StaffApp>? StaffApps { get; set; } = new HashSet<StaffApp>();
     }
 }

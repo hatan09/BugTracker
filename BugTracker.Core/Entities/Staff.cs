@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    public class Dev : User
+    public class Staff : User
     {
-        public ICollection<AppDev>? AppDevs { get; set; } = new HashSet<AppDev>();
+        public ICollection<StaffApp>? StaffApps { get; set; } = new HashSet<StaffApp>();
     }
 }

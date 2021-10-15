@@ -10,18 +10,18 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Repository
 {
-    public class DevManager : UserManager<Dev>
+    public class DevManager : UserManager<Staff>
     {
         public DevManager(
-            IUserStore<Dev> store,
+            IUserStore<Staff> store,
             IOptions<IdentityOptions> optionsAccessor,
-            IPasswordHasher<Dev> passwordHasher,
-            IEnumerable<IUserValidator<Dev>> userValidators,
-            IEnumerable<IPasswordValidator<Dev>> passwordValidators,
+            IPasswordHasher<Staff> passwordHasher,
+            IEnumerable<IUserValidator<Staff>> userValidators,
+            IEnumerable<IPasswordValidator<Staff>> passwordValidators,
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<Dev>> logger
+            ILogger<UserManager<Staff>> logger
         ) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger) { }
     }
 }

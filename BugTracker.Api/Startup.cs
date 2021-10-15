@@ -79,16 +79,16 @@ namespace BugTracker.Api
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 1;
 
-                //options.User.RequireUniqueEmail = true;
+                //options.User.RequireUniqueEmail = true; //default false
                 //options.SignIn.RequireConfirmedEmail = true;
             })
                     .AddEntityFrameworkStores<AppDbContext>()
                     .AddUserManager<UserManager>()
                     .AddDefaultTokenProviders();
 
-            services.AddIdentityCore<Dev>()
+            services.AddIdentityCore<Staff>()
                 .AddRoles<Role>()
-                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Dev, Role>>()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Staff, Role>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddUserManager<DevManager>()
                 .AddDefaultTokenProviders();

@@ -14,7 +14,7 @@ namespace BugTracker.Core.Entities
 
 
         public virtual ICollection<App> Apps { get; set; } = new HashSet<App>();
-        public virtual ICollection<Dev> Devs { get; set; } = new HashSet<Dev>();
+        public virtual ICollection<Staff> Devs { get; set; } = new HashSet<Staff>();
 
         
     }

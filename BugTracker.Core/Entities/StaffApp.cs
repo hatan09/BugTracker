@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    public class AppDev
+    public class StaffApp
     {
         public bool IsLeader { get; set; } = false;
 
-        public Dev Dev { get; set; }
+        public Staff Dev { get; set; }
         public string DevId { get; set; }
 
         public App App { get; set; }
