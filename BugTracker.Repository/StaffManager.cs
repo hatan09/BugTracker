@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Repository
 {
-    public class DevManager : UserManager<Staff>
+    public class StaffManager : UserManager<Staff>
     {
-        public DevManager(
+        public StaffManager(
             IUserStore<Staff> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<Staff> passwordHasher,

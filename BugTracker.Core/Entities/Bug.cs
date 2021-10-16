@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    public class Bug : BaseEntity
+    public class Bug : BaseEntity<int>
     {
-
         public string? Title { get; set; } = string.Empty;
         public ServerityLevel Serverity { get; set; } = ServerityLevel.SMALL;
 

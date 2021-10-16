@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    public class App : BaseEntity
+    public class App : BaseEntity<int>
     {
         public string Name { get; set; } = string.Empty;
         public string LogoURL { get; set; } = string.Empty;

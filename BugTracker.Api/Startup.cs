@@ -90,7 +90,7 @@ namespace BugTracker.Api
                 .AddRoles<Role>()
                 .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Staff, Role>>()
                 .AddEntityFrameworkStores<AppDbContext>()
-                .AddUserManager<DevManager>()
+                .AddUserManager<StaffManager>()
                 .AddDefaultTokenProviders();
 
             services.AddIdentityCore<Customer>()
@@ -98,6 +98,13 @@ namespace BugTracker.Api
                 .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Customer, Role>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddUserManager<CustomerManager>()
+                .AddDefaultTokenProviders();
+
+            services.AddIdentityCore<Admin>()
+                .AddRoles<Role>()
+                .AddClaimsPrincipalFactory<UserClaimsPrincipalFactory<Admin, Role>>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddUserManager<AdminManager>()
                 .AddDefaultTokenProviders();
 
             services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));

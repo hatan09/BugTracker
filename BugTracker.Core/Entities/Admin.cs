@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    public class BaseEntity<TKey>
+    public class Admin : User
     {
-        [Key]
-        public TKey? Id { get; set; }
+        public virtual Company? Company { get; set; }
     }
 }

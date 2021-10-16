@@ -15,18 +15,27 @@ namespace BugTracker.Api.DataObjects
         {
             CreateMap<Role, RoleDTO>();
             CreateMap<RoleDTO, Role>()
-                .ForMember(d => d.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
 
             CreateMap<User, UserDTO>()
-                .ForMember(d => d.Roles, opt => opt.MapFrom(s => s.UserRoles.Select(ur => ur.Role!.Name)));
+                .ForMember(dto => dto.Roles, opt => opt.MapFrom(usr => usr.UserRoles.Select(u_r => u_r.Role!.Name)));
             CreateMap<UserDTO, User>();
             CreateMap<CreateUserDTO, User>();
 
             CreateMap<Customer, CustomerDTO>();
             CreateMap<CustomerDTO, Customer>()
-                .ForMember(d => d.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<CreateCustomerDTO, Customer>();
             CreateMap<Customer, GetCustomerDTO>();
+
+            CreateMap<Company, CompanyDTO>();
+            CreateMap<CompanyDTO, Company>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.Guid, opt => opt.Ignore());
+
+            CreateMap<Admin, AdminDTO>();
+            CreateMap<AdminDTO, Admin>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
         }
     }
 }

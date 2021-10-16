@@ -20,7 +20,8 @@ namespace BugTracker.Core.Database
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Staff>().ToTable("Devs");
+            modelBuilder.Entity<Admin>().ToTable("Admins");
+            modelBuilder.Entity<Staff>().ToTable("Staffs");
             modelBuilder.Entity<Customer>().ToTable("Customers");
 
             modelBuilder.Entity<UserRole>(entity =>
@@ -34,6 +35,12 @@ namespace BugTracker.Core.Database
                 entity.HasOne<Staff>(ad => ad.Dev).WithMany(dv => dv.StaffApps).HasForeignKey(ad => ad.DevId);
                 entity.HasOne<App>(ad => ad.App).WithMany(ap => ap.StaffApps).HasForeignKey(ad => ad.AppId);
                 entity.HasKey(ad => new { ad.AppId, ad.DevId });
+            });
+
+            modelBuilder.Entity<Company>(entity =>
+            {
+                entity.Property(cpn => cpn.Guid).HasDefaultValueSql("NEWID()");
+                entity.HasIndex(cpn => cpn.Guid).IsUnique();
             });
         }
     }  

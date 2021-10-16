@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Api.DataObjects
 {
-    public class CustomerDTO
+    public class CustomerDTO : BaseDTO<string>
     {
 
     }

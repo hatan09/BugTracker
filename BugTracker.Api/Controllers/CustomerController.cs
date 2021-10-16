@@ -66,5 +66,7 @@ namespace BugTracker.Api.Controllers
 
             return CreatedAtAction(nameof(Get), new { customer.Id }, _mapper.Map<GetCustomerDTO>(customer));
         }
+
+
     }
 }

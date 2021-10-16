@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Api.DataObjects
 {
-    public class UserDTO : BaseDTO<string>
+    public class AdminDTO : BaseDTO<string>
     {
         [Required]
         public string FullName { get; set; } = string.Empty;
 
         [Required]
+        public string UserName { get; set; } = string.Empty;
+
+        [Required]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        public ICollection<string> Roles { get; set; } = Array.Empty<string>();
+        public string PhoneNumber { get; set; } = string.Empty;
     }
 }

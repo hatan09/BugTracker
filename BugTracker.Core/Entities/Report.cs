@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Core.Entities
 {
-    class Report
+    public class Report : BaseEntity<int>
     {
+        public string? HashTag { get; set; } = string.Empty;
     }
 }
