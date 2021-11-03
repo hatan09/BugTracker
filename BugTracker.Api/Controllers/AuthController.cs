@@ -68,8 +68,10 @@ namespace BugTracker.Api.Controllers
 
             var identity = new ClaimsIdentity(
                 new GenericIdentity(user.UserName, "TokenAuth"),
-                new[] { new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), new Claim("id", user.Id.ToString()) }
-                    .Union(roles.Select(role => new Claim(ClaimTypes.Role, role)))
+                new[] { 
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), 
+                    new Claim("id", user.Id.ToString()) }
+                        .Union(roles.Select(role => new Claim(ClaimTypes.Role, role)))
                 );
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenConfig.JWT_Secret));

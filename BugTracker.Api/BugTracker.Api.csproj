@@ -22,4 +22,9 @@
     <ProjectReference Include="..\BugTracker.Repository\BugTracker.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DataObjects\Create\" />
+    <Folder Include="DataObjects\Get\" />
+  </ItemGroup>
+
 </Project>

@@ -8,6 +8,14 @@ namespace BugTracker.Core.Entities
 {
     public class Report : BaseEntity<int>
     {
+        public string? Title { get; set; } = string.Empty;
+        public string? Description { get; set; } = string.Empty;
         public string? HashTag { get; set; } = string.Empty;
+
+        public string CustomerId { get; set; }
+        public Customer Customer { get; set; }
+
+        public int AppId { get; set; }
+        public App App { get; set; }
     }
 }

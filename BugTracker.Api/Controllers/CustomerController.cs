@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
-using BugTracker.Api.DataObjects.Create;
-using BugTracker.Api.DataObjects.Get;
+using BugTracker.Api.DataObjects;
 using BugTracker.Core.Entities;
 using BugTracker.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 

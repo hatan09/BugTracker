@@ -1,6 +1,7 @@
 using AutoMapper;
 using BugTracker.Api.DataObjects;
 using BugTracker.Api.Settings;
+using BugTracker.Contracts;
 using BugTracker.Core.Database;
 using BugTracker.Core.Entities;
 using BugTracker.Repository;
@@ -129,6 +130,9 @@ namespace BugTracker.Api
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            services.AddScoped<ICompanyRepository, CompanyRepository>();
+            services.AddScoped<IAppRepository, AppRepository>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {

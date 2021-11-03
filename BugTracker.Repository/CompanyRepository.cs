@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Repository
 {
-    class CompanyRepository : BaseRepository<Company>, ICompanyRepository
+    public class CompanyRepository : BaseRepository<Company>, ICompanyRepository
     {
         public CompanyRepository(AppDbContext context) : base(context) { }
 

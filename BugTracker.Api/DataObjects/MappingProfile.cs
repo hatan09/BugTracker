@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
-using BugTracker.Api.DataObjects.Create;
-using BugTracker.Api.DataObjects.Get;
 using BugTracker.Core.Entities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BugTracker.Api.DataObjects
 {
@@ -22,10 +17,15 @@ namespace BugTracker.Api.DataObjects
             CreateMap<UserDTO, User>();
             CreateMap<CreateUserDTO, User>();
 
+            CreateMap<Admin, AdminDTO>();
+            CreateMap<AdminDTO, Admin>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+
             CreateMap<Customer, CustomerDTO>();
             CreateMap<CustomerDTO, Customer>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
-            CreateMap<CreateCustomerDTO, Customer>();
+            CreateMap<CreateCustomerDTO, Customer>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<Customer, GetCustomerDTO>();
 
             CreateMap<Company, CompanyDTO>();
@@ -33,8 +33,10 @@ namespace BugTracker.Api.DataObjects
                 .ForMember(ent => ent.Id, opt => opt.Ignore())
                 .ForMember(ent => ent.Guid, opt => opt.Ignore());
 
-            CreateMap<Admin, AdminDTO>();
-            CreateMap<AdminDTO, Admin>()
+            CreateMap<App, AppDTO>();
+            CreateMap<AppDTO, App>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+            CreateMap<CreateAppDTO, App>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
         }
     }

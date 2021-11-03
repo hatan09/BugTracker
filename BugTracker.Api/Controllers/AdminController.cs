@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AdminController : ControllerBase
@@ -23,7 +24,7 @@ namespace BugTracker.Api.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -34,6 +35,7 @@ namespace BugTracker.Api.Controllers
             return Ok(_mapper.Map<AdminDTO>(admin));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AdminDTO dto, CancellationToken cancellationToken = default)
         {
