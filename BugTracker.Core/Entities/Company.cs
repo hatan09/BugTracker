@@ -12,6 +12,7 @@ namespace BugTracker.Core.Entities
         public string Name { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
         public string? LogoURL { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; } = false;
 
         public string? AdminId { get; set; } = string.Empty;
         public virtual Admin? Admin { get; set; }

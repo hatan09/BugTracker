@@ -52,6 +52,7 @@ namespace BugTracker.Api.Controllers
 
             return Ok(new
             {
+                user.Id,
                 requestAt,
                 expiresIn,
                 accessToken = token,

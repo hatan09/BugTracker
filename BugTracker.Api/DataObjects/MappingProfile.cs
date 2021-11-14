@@ -38,6 +38,14 @@ namespace BugTracker.Api.DataObjects
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<CreateAppDTO, App>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
+
+            CreateMap<Report, ReportDTO>();
+            CreateMap<ReportDTO, Report>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+
+            CreateMap<Bug, BugDTO>();
+            CreateMap<BugDTO, Bug>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
         }
     }
 }

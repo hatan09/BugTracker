@@ -10,6 +10,7 @@ namespace BugTracker.Core.Entities
     {
         public string Name { get; set; } = string.Empty;
         public string LogoURL { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; } = false;
 
         public int? CompanyId { get; set; }
         public virtual Company Company { get; set; }

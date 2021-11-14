@@ -32,8 +32,8 @@ namespace BugTracker.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         {
-            var classes = await _companyRepository.FindAll().ToListAsync(cancellationToken);
-            return Ok(_mapper.Map<IEnumerable<CompanyDTO>>(classes));
+            var companies = await _companyRepository.FindAll().ToListAsync(cancellationToken);
+            return Ok(_mapper.Map<IEnumerable<CompanyDTO>>(companies));
         }
 
 
@@ -45,6 +45,17 @@ namespace BugTracker.Api.Controllers
                 return NotFound();
 
             return Ok(_mapper.Map<CompanyDTO>(company));
+        }
+
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> SearchByName(string name, CancellationToken cancellationToken = default)
+        {
+            var companies = await _companyRepository.SearchByName(name).ToListAsync(cancellationToken);
+            if (companies is null)
+                return NotFound();
+
+            return Ok(_mapper.Map<IEnumerable<CompanyDTO>>(companies));
         }
 
 
@@ -63,10 +74,6 @@ namespace BugTracker.Api.Controllers
             return CreatedAtAction(nameof(Get), new { company.Guid }, _mapper.Map<CompanyDTO>(company));
         }
 
-        private static string GenerateHashTag()
-        {
-            
-                return string.Format("01");
-        }
+
     }
 }

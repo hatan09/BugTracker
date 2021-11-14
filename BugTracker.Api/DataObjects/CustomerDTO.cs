@@ -14,14 +14,15 @@ namespace BugTracker.Api.DataObjects
     }
 
     [ModelBinder(typeof(MultipleSourcesModelBinder<GetCustomerDTO>))]
-    public class GetCustomerDTO : CustomerDTO
+    public class GetCustomerDTO
     {
+        public string Guid { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string? Email { get; set; }
     }
 
     [ModelBinder(typeof(MultipleSourcesModelBinder<CreateCustomerDTO>))]
-    public class CreateCustomerDTO : CustomerDTO
+    public class CreateCustomerDTO
     {
         public string? UserName { get; set; } = string.Empty;
 

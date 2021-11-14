@@ -8,11 +8,6 @@ namespace BugTracker.Api.DataObjects
 {
     public class AppDTO : BaseDTO<int>
     {
-
-    }
-
-    public class CreateAppDTO : AppDTO
-    {
         [Required]
         public string Name { get; set; } = string.Empty;
 
@@ -21,5 +16,15 @@ namespace BugTracker.Api.DataObjects
 
         [Required]
         public int CompanyId { get; set; }
+    }
+
+    public class CreateAppDTO : AppDTO
+    {
+
+    }
+
+    public class GetAppDTO : AppDTO
+    {
+
     }
 }

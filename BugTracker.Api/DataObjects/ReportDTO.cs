@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace BugTracker.Core.Entities
+namespace BugTracker.Api.DataObjects
 {
-    public class Report : BaseEntity<int>
+
+    public class ReportDTO : BaseDTO<int>
     {
         public string? Title { get; set; } = string.Empty;
         public string? Description { get; set; } = string.Empty;
 
         public string CustomerId { get; set; }
-        public Customer Customer { get; set; }
 
         public int AppId { get; set; }
-        public App App { get; set; }
     }
 }

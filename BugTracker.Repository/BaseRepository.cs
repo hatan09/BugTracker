@@ -40,7 +40,7 @@ namespace BugTracker.Repository
         {
             _dbSet.Update(entity);
         }
-        public void Delete(T entity)
+        public virtual void Delete(T entity)
         {
             _dbSet.Remove(entity);
         }

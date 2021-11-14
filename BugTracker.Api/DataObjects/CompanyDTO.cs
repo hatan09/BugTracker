@@ -12,5 +12,6 @@ namespace BugTracker.Api.DataObjects
         public string ShortName { get; set; } = string.Empty;
         public string? LogoURL { get; set; } = string.Empty;
         public string? AdminId { get; set; } = string.Empty;
+        public bool IsDeleted { get; set; } = false;
     }
 }
