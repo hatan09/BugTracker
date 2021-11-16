@@ -4,6 +4,7 @@ using BugTracker.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BugTracker.Core.Database
 {
@@ -46,26 +47,25 @@ namespace BugTracker.Core.Database
 
             modelBuilder.Entity<StaffApp>(entity =>
             {
-                entity.HasOne(ad => ad.Dev)
-                    .WithMany(dv => dv.StaffApps)
-                    .HasForeignKey(ad => ad.DevId)
+                entity.HasOne(sa => sa.Dev)
+                    .WithMany(stf => stf.StaffApps)
+                    .HasForeignKey(sa => sa.DevId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasOne(ad => ad.App)
-                    .WithMany(ap => ap.StaffApps)
-                    .HasForeignKey(ad => ad.AppId)
+                entity.HasOne(sa => sa.App)
+                    .WithMany(app => app.StaffApps)
+                    .HasForeignKey(sa => sa.AppId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasKey(ad => new { ad.AppId, ad.DevId });
+                entity.HasKey(sa => new { sa.AppId, sa.DevId });
             });
 
             modelBuilder.Entity<Company>(entity =>
             {
-                entity.Property(cpn => cpn.Guid)
-                    .HasDefaultValueSql("NEWID()");
-
                 entity.HasIndex(cpn => cpn.Guid)
                     .IsUnique();
+
+                entity.Property(cpn => cpn.Guid).HasDefaultValueSql("NEWID()");
             });
 
             modelBuilder.Entity<App>(entity =>

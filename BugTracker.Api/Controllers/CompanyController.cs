@@ -38,7 +38,7 @@ namespace BugTracker.Api.Controllers
 
 
         [HttpGet("{guid}")]
-        public async Task<IActionResult> Get(string guid, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Get(Guid guid, CancellationToken cancellationToken = default)
         {
             var company = await _companyRepository.FindByGuidAsync(guid, cancellationToken);
             if (company is null)
@@ -64,9 +64,10 @@ namespace BugTracker.Api.Controllers
         {
             var admin = await _adminManager.FindByIdAsync(dto.AdminId);
             if (admin is null)
-                return BadRequest(new { message = "Course is not found" });
+                return BadRequest(new { message = "Admin not found" });
 
             var company = _mapper.Map<Company>(dto);
+            company.IsDeleted = false;
 
             _companyRepository.Add(company);
             await _companyRepository.SaveChangesAsync(cancellationToken);
@@ -74,6 +75,31 @@ namespace BugTracker.Api.Controllers
             return CreatedAtAction(nameof(Get), new { company.Guid }, _mapper.Map<CompanyDTO>(company));
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] CompanyDTO dto, CancellationToken cancellationToken = default)
+        {
+            var company = await _companyRepository.FindByGuidAsync(dto.Guid, cancellationToken);
+            if (company is null || company.IsDeleted)
+                return NotFound();
 
+            _mapper.Map(dto, company);
+            _companyRepository.Update(company);
+            await _companyRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpDelete("{guid}")]
+        public async Task<IActionResult> Delete(Guid guid, CancellationToken cancellationToken)
+        {
+            var company = await _companyRepository.FindByGuidAsync(guid, cancellationToken);
+            if (company is null || company.IsDeleted)
+                return NotFound();
+
+            company.IsDeleted = true;
+            _companyRepository.Update(company);
+            await _companyRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
     }
 }

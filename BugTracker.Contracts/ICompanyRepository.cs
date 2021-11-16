@@ -10,7 +10,7 @@ namespace BugTracker.Contracts
 {
     public interface ICompanyRepository : IBaseRepository<Company>
     {
-        public Task<Company> FindByGuidAsync(string guid, CancellationToken cancellationToken = default);
+        public Task<Company> FindByGuidAsync(Guid guid, CancellationToken cancellationToken = default);
         public IQueryable<Company> SearchByName(string name);
     }
 }

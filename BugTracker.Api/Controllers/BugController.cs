@@ -61,5 +61,32 @@ namespace BugTracker.Api.Controllers
 
             return CreatedAtAction(nameof(Get), new { bug.Id }, _mapper.Map<BugDTO>(bug));
         }
+
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] BugDTO dto, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(dto.Id, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            _mapper.Map(dto, bug);
+            _bugRepository.Update(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
+        {
+            var bug = await _bugRepository.FindByIdAsync(id, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            _bugRepository.Delete(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
     }
 }

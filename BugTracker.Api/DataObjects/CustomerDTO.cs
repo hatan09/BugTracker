@@ -16,7 +16,6 @@ namespace BugTracker.Api.DataObjects
     [ModelBinder(typeof(MultipleSourcesModelBinder<GetCustomerDTO>))]
     public class GetCustomerDTO
     {
-        public string Guid { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
         public string? Email { get; set; }
     }

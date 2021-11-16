@@ -64,5 +64,29 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] CustomerDTO dto)
+        {
+            var customer = await _customerManager.FindByIdAsync(dto.Id);
+            if (customer is null || customer.IsDeleted)
+                return NotFound();
+
+            _mapper.Map(dto, customer);
+            await _customerManager.UpdateAsync(customer);
+            return NoContent();
+        }
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        {
+            var customer = await _customerManager.FindByIdAsync(id);
+            if (customer is null || customer.IsDeleted)
+                return NotFound();
+
+            customer.IsDeleted = true;
+            await _customerManager.UpdateAsync(customer);
+            return NoContent();
+        }
     }
 }

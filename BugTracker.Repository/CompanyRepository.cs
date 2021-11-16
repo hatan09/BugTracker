@@ -20,7 +20,7 @@ namespace BugTracker.Repository
         public override IQueryable<Company> FindAll(Expression<Func<Company, bool>>? predicate = null)
             => _dbSet.WhereIf(predicate != null, predicate!).Where(cpn => !cpn.IsDeleted);
 
-        public async Task<Company> FindByGuidAsync(string guid, CancellationToken cancellationToken = default)
+        public async Task<Company> FindByGuidAsync(Guid guid, CancellationToken cancellationToken = default)
             => await FindAll(cpn => cpn.Guid.Equals(guid))
                 .FirstOrDefaultAsync(cancellationToken);
 

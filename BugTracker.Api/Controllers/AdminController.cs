@@ -24,6 +24,7 @@ namespace BugTracker.Api.Controllers
             _mapper = mapper;
         }
 
+
         [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
@@ -34,6 +35,7 @@ namespace BugTracker.Api.Controllers
 
             return Ok(_mapper.Map<AdminDTO>(admin));
         }
+
 
         [AllowAnonymous]
         [HttpPost]
@@ -56,6 +58,34 @@ namespace BugTracker.Api.Controllers
             }
 
             return CreatedAtAction(nameof(Get), new { admin.Id }, _mapper.Map<AdminDTO>(admin));
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] AdminDTO dto)
+        {
+            var admin = await _adminManager.FindByIdAsync(dto.Id);
+            if (admin is null || admin.IsDeleted)
+                return NotFound();
+
+            _mapper.Map(dto, admin);
+            await _adminManager.UpdateAsync(admin);
+            return NoContent();
+        }
+
+
+        [Authorize(Roles = "admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id, CancellationToken cancellationToken)
+        {
+            var admin = await _adminManager.FindByIdAsync(id);
+            if (admin is null || admin.IsDeleted)
+                return NotFound();
+
+            admin.IsDeleted = true;
+            await _adminManager.UpdateAsync(admin);
+            return NoContent();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ namespace BugTracker.Core.Entities
 {
     public class Company : BaseEntity<int>
     {
-        public string? Guid { get; set; } = string.Empty;
+        public Guid Guid { get; set; }
         public string Name { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
         public string? LogoURL { get; set; } = string.Empty;
