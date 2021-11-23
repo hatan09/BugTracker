@@ -10,11 +10,19 @@ namespace BugTracker.Api.DataObjects
 {
     public class CustomerDTO : BaseDTO<string>
     {
+        public string? UserName { get; set; } = string.Empty;
 
+        public string? Password { get; set; } = string.Empty;
+
+        public string? FullName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
     }
 
     [ModelBinder(typeof(MultipleSourcesModelBinder<GetCustomerDTO>))]
-    public class GetCustomerDTO
+    public class GetCustomerDTO : BaseDTO<string>
     {
         public string FullName { get; set; } = string.Empty;
         public string? Email { get; set; }
@@ -33,6 +41,6 @@ namespace BugTracker.Api.DataObjects
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
-        public DateTime Birthdate { get; set; } = DateTime.Now;
+        public string Birthdate { get; set; } = string.Empty;
     }
 }

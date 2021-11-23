@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using BugTracker.Core.Entities;
+using System;
+using System.Globalization;
 using System.Linq;
 
 namespace BugTracker.Api.DataObjects
@@ -19,20 +21,23 @@ namespace BugTracker.Api.DataObjects
 
             CreateMap<Admin, AdminDTO>();
             CreateMap<AdminDTO, Admin>()
-                .ForMember(ent => ent.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.Birthdate, o => o.MapFrom(dto => DateTime.Parse(dto.Birthdate, null, DateTimeStyles.AssumeUniversal)));
 
             CreateMap<Customer, CustomerDTO>();
             CreateMap<CustomerDTO, Customer>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<CreateCustomerDTO, Customer>()
-                .ForMember(ent => ent.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.Birthdate, o => o.MapFrom(dto => DateTime.Parse(dto.Birthdate, null, DateTimeStyles.AssumeUniversal)));
             CreateMap<Customer, GetCustomerDTO>();
 
             CreateMap<Staff, StaffDTO>();
             CreateMap<StaffDTO, Staff>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<CreateStaffDTO, Staff>()
-                .ForMember(ent => ent.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.Birthdate, o => o.MapFrom(dto => DateTime.Parse(dto.Birthdate, null, DateTimeStyles.AssumeUniversal)));
             CreateMap<Staff, GetStaffDTO>();
 
             CreateMap<Company, CompanyDTO>();

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BugTracker.Api.DataObjects;
+using BugTracker.Api.Models;
 using BugTracker.Contracts;
 using BugTracker.Core.Entities;
+using BugTracker.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,14 +21,16 @@ namespace BugTracker.Api.Controllers
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IAppRepository _appRepository;
+        private readonly StaffManager _staffManager;
         private readonly IStaffAppRepository _staffAppRepository;
         private readonly IMapper _mapper;
 
-        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, IStaffAppRepository staffAppRepository, IMapper mapper)
+        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, StaffManager staffManager, IStaffAppRepository staffAppRepository, IMapper mapper)
         {
             _companyRepository = companyRepository;
             _appRepository = appRepository;
             _staffAppRepository = staffAppRepository;
+            _staffManager = staffManager;
             _mapper = mapper;
         }
 
@@ -34,7 +38,7 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         {
             var apps = await _appRepository.FindAll().ToListAsync(cancellationToken);
-            return Ok(_mapper.Map<IEnumerable<CompanyDTO>>(apps));
+            return Ok(_mapper.Map<IEnumerable<AppDTO>>(apps));
         }
 
 
@@ -76,6 +80,26 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpPost("{appId}")]
+        public async Task<IActionResult> AssignStaff(int appId, List<string> staffIds, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            if (app is null) return BadRequest(" App not found ");
+
+            foreach(var staffId in staffIds)
+            {
+                var staff = await _staffManager.FindByIdAsync(staffId);
+
+                if (app is not null && staff is not null)
+                    _staffAppRepository.AssignStaff(app, staff);
+            }
+            
+            await _staffAppRepository.SaveChangesAsync(cancellationToken);
+
+            return NoContent();
+        }
+
+
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] AppDTO dto, CancellationToken cancellationToken = default)
         {
@@ -91,13 +115,13 @@ namespace BugTracker.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateLeader([FromBody] UpdateStaffAppForm form, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> UpdateLeader([FromBody] UpdateStaffAppModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(form.AppId, cancellationToken);
-            if (app is null || app.IsDeleted)
-                return NotFound();
+            var staffApp = await _staffAppRepository.FindByIdAsync(model.AppId, model.StaffId, cancellationToken);
+            if (staffApp is null) return NotFound();
 
-            _staffAppRepository.UpdateLeader(form.AppId, form.StaffId, cancellationToken);
+            staffApp.IsLeader = model.IsLeader;
+            _staffAppRepository.Update(staffApp);
             await _staffAppRepository.SaveChangesAsync(cancellationToken);
 
             return NoContent();
@@ -114,20 +138,6 @@ namespace BugTracker.Api.Controllers
             app.IsDeleted = true;
             _appRepository.Update(app);
             await _appRepository.SaveChangesAsync(cancellationToken);
-            return NoContent();
-        }
-
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteLeader([FromBody] UpdateStaffAppForm form, CancellationToken cancellationToken = default)
-        {
-            var app = await _appRepository.FindByIdAsync(form.AppId, cancellationToken);
-            if (app is null || app.IsDeleted)
-                return NotFound();
-
-            _staffAppRepository.RemoveLeader(form.AppId, form.StaffId, cancellationToken);
-            await _staffAppRepository.SaveChangesAsync(cancellationToken);
-
             return NoContent();
         }
     }

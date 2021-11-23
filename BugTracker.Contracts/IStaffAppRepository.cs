@@ -10,8 +10,11 @@ namespace BugTracker.Contracts
 {
     public interface IStaffAppRepository : IBaseRepository<StaffApp>
     {
-        public void UpdateLeader(int appId, string staffId, CancellationToken cancellationToken);
+        public Task<StaffApp> FindByIdAsync(int appId, string staffId, CancellationToken cancellationToken = default);
+        public void AssignStaff(App app, Staff staff);
 
-        public void RemoveLeader(int appId, string staffId, CancellationToken cancellationToken);
+        public IQueryable<StaffApp> FindByAppId(int appId, CancellationToken cancellationToken);
+
+        public IQueryable<StaffApp> FindByStaffId(string staffId, CancellationToken cancellationToken);
     }
 }

@@ -40,10 +40,12 @@ namespace BugTracker.Repository
         {
             _dbSet.Update(entity);
         }
+
         public virtual void Delete(T entity)
         {
             _dbSet.Remove(entity);
         }
+
         public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             await _context.SaveChangesAsync(cancellationToken);

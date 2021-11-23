@@ -15,20 +15,23 @@ namespace BugTracker.Repository
     {
         public StaffAppRepository(AppDbContext context) : base(context) { }
 
-        public async void UpdateLeader(int appId, string staffId, CancellationToken cancellationToken)
+        public void AssignStaff(App app, Staff staff)
         {
-            var staffApps = await FindAll(sa => sa.AppId == appId && sa.StaffId == staffId).FirstOrDefaultAsync(cancellationToken);
-
-            staffApps.IsLeader = true;
-            _dbSet.Update(staffApps);
+            Add(new StaffApp
+            {
+                IsLeader = false,
+                App = app,
+                Staff = staff
+            });
         }
 
-        public async void RemoveLeader(int appId, string staffId, CancellationToken cancellationToken)
-        {
-            var staffApps = await FindAll(sa => sa.AppId == appId && sa.StaffId == staffId).FirstOrDefaultAsync(cancellationToken);
+        public async Task<StaffApp> FindByIdAsync(int appId, string staffId, CancellationToken cancellationToken = default)
+            => await _dbSet.FindAsync(appId, staffId);
 
-            staffApps.IsLeader = false;
-            _dbSet.Update(staffApps);
-        }
+        public IQueryable<StaffApp> FindByAppId(int appId, CancellationToken cancellationToken)
+            => FindAll(sa => sa.AppId == appId);
+
+        public IQueryable<StaffApp> FindByStaffId(string staffId, CancellationToken cancellationToken)
+            => FindAll(sa => sa.StaffId == staffId);
     }
 }
