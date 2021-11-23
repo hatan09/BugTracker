@@ -17,6 +17,8 @@ namespace BugTracker.Core.Entities
         public App App { get; set; }
 
         public virtual ICollection<Staff> Staffs { get; set; } = new HashSet<Staff>();
+        public virtual ICollection<Staff> Reports { get; set; } = new HashSet<Staff>();
+
     }
 
     public enum ServerityLevel { SMALL, NORMAL, BAD, EXTREME, EMERGENCY}

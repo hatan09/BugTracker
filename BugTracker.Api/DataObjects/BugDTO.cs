@@ -15,4 +15,9 @@ namespace BugTracker.Api.DataObjects
 
         public int AppId { get; set; }
     }
+
+    public class CreateBugDTO : BugDTO
+    {
+        public List<int> ReportIDs { get; set; } = new List<int>();
+    }
 }

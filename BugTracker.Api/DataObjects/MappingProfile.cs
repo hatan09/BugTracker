@@ -28,6 +28,13 @@ namespace BugTracker.Api.DataObjects
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<Customer, GetCustomerDTO>();
 
+            CreateMap<Staff, StaffDTO>();
+            CreateMap<StaffDTO, Staff>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+            CreateMap<CreateStaffDTO, Staff>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+            CreateMap<Staff, GetStaffDTO>();
+
             CreateMap<Company, CompanyDTO>();
             CreateMap<CompanyDTO, Company>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore())
@@ -45,6 +52,8 @@ namespace BugTracker.Api.DataObjects
 
             CreateMap<Bug, BugDTO>();
             CreateMap<BugDTO, Bug>()
+                .ForMember(ent => ent.Id, opt => opt.Ignore());
+            CreateMap<CreateBugDTO, Bug>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
         }
     }

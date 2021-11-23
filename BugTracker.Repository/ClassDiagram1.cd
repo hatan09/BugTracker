@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BugTracker.Repository.AdminManager">
+    <Position X="15.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AdminManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BugTracker.Repository.AppRepository">
+    <Position X="6.5" Y="8.25" Width="2" />
+    <InheritanceLine Type="BugTracker.Repository.BaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.401" />
+        <Point X="5" Y="9.438" />
+        <Point X="6.5" Y="9.438" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAQBAAAAAEAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>AppRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="BugTracker.Repository.BaseRepository&lt;T&gt;">
+    <Position X="4" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAABEAAAAAQIAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BaseRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="BugTracker.Repository.BugRepository">
+    <Position X="6.5" Y="6" Width="2" />
+    <InheritanceLine Type="BugTracker.Repository.BaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.401" />
+        <Point X="5" Y="6.875" />
+        <Point X="6.5" Y="6.875" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAKAA=</HashCode>
+      <FileName>BugRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="BugTracker.Repository.CompanyRepository">
+    <Position X="6.5" Y="11" Width="2" />
+    <InheritanceLine Type="BugTracker.Repository.BaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.401" />
+        <Point X="5" Y="12.25" />
+        <Point X="6.5" Y="12.25" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQBAAAAAEAAAAAAAAAgAAgAAA=</HashCode>
+      <FileName>CompanyRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="BugTracker.Repository.CustomerManager">
+    <Position X="15.5" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CustomerManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BugTracker.Repository.ReportRepository">
+    <Position X="6.5" Y="4" Width="2" />
+    <InheritanceLine Type="BugTracker.Repository.BaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="5" Y="3.401" />
+        <Point X="5" Y="4.75" />
+        <Point X="6.5" Y="4.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>ReportRepository.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.1" />
+  </Class>
+  <Class Name="BugTracker.Repository.StaffManager">
+    <Position X="15.5" Y="7" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>StaffManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BugTracker.Repository.UserManager">
+    <Position X="15.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UserManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="BugTracker.Contracts.IAppRepository">
+    <Position X="10.75" Y="8.25" Width="2" />
+    <InheritanceLine Type="BugTracker.Contracts.IBaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="3.315" />
+        <Point X="13.5" Y="9" />
+        <Point X="12.75" Y="9" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BugTracker.Contracts.IBaseRepository&lt;T&gt;">
+    <Position X="12.5" Y="1.25" Width="2" />
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BugTracker.Contracts.IBugRepository">
+    <Position X="10.75" Y="6" Width="2" />
+    <InheritanceLine Type="BugTracker.Contracts.IBaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="3.315" />
+        <Point X="13.5" Y="6.875" />
+        <Point X="12.75" Y="6.875" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BugTracker.Contracts.ICompanyRepository">
+    <Position X="10.75" Y="11" Width="2" />
+    <InheritanceLine Type="BugTracker.Contracts.IBaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="3.315" />
+        <Point X="13.5" Y="11.812" />
+        <Point X="12.75" Y="11.812" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Interface Name="BugTracker.Contracts.IReportRepository">
+    <Position X="10.75" Y="4" Width="2" />
+    <InheritanceLine Type="BugTracker.Contracts.IBaseRepository&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="3.315" />
+        <Point X="13.5" Y="4.688" />
+        <Point X="12.75" Y="4.688" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier />
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

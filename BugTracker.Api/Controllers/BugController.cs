@@ -47,6 +47,42 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetByApp(int appId, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
+
+            var bugs = await _bugRepository.FindByApp(appId).ToListAsync(cancellationToken);
+            return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetByServerity(int appId, ServerityLevel serverityLevel, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
+
+            var bugs = await _bugRepository.FindByServerity(appId, serverityLevel).ToListAsync(cancellationToken);
+            return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetByStatus(int appId, ProgressStatus progressStatus, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
+
+            var bugs = await _bugRepository.FindByStatus(appId, progressStatus).ToListAsync(cancellationToken);
+            return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BugDTO dto, CancellationToken cancellationToken = default)
         {
@@ -55,6 +91,7 @@ namespace BugTracker.Api.Controllers
                 return BadRequest(new { message = "App not found" });
 
             var bug = _mapper.Map<Bug>(dto);
+            
 
             _bugRepository.Add(bug);
             await _bugRepository.SaveChangesAsync(cancellationToken);

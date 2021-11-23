@@ -19,12 +19,14 @@ namespace BugTracker.Api.Controllers
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IAppRepository _appRepository;
+        private readonly IStaffAppRepository _staffAppRepository;
         private readonly IMapper _mapper;
 
-        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, IMapper mapper)
+        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, IStaffAppRepository staffAppRepository, IMapper mapper)
         {
             _companyRepository = companyRepository;
             _appRepository = appRepository;
+            _staffAppRepository = staffAppRepository;
             _mapper = mapper;
         }
 
@@ -88,6 +90,20 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateLeader([FromBody] UpdateStaffAppForm form, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(form.AppId, cancellationToken);
+            if (app is null || app.IsDeleted)
+                return NotFound();
+
+            _staffAppRepository.UpdateLeader(form.AppId, form.StaffId, cancellationToken);
+            await _staffAppRepository.SaveChangesAsync(cancellationToken);
+
+            return NoContent();
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
@@ -98,6 +114,20 @@ namespace BugTracker.Api.Controllers
             app.IsDeleted = true;
             _appRepository.Update(app);
             await _appRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteLeader([FromBody] UpdateStaffAppForm form, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(form.AppId, cancellationToken);
+            if (app is null || app.IsDeleted)
+                return NotFound();
+
+            _staffAppRepository.RemoveLeader(form.AppId, form.StaffId, cancellationToken);
+            await _staffAppRepository.SaveChangesAsync(cancellationToken);
+
             return NoContent();
         }
     }

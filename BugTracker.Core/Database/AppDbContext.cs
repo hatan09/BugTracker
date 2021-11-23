@@ -47,9 +47,9 @@ namespace BugTracker.Core.Database
 
             modelBuilder.Entity<StaffApp>(entity =>
             {
-                entity.HasOne(sa => sa.Dev)
+                entity.HasOne(sa => sa.Staff)
                     .WithMany(stf => stf.StaffApps)
-                    .HasForeignKey(sa => sa.DevId)
+                    .HasForeignKey(sa => sa.StaffId)
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(sa => sa.App)
@@ -57,7 +57,7 @@ namespace BugTracker.Core.Database
                     .HasForeignKey(sa => sa.AppId)
                     .OnDelete(DeleteBehavior.Cascade);
 
-                entity.HasKey(sa => new { sa.AppId, sa.DevId });
+                entity.HasKey(sa => new { sa.AppId, sa.StaffId });
             });
 
             modelBuilder.Entity<Company>(entity =>

@@ -10,8 +10,8 @@ namespace BugTracker.Core.Entities
     {
         public bool IsLeader { get; set; } = false;
 
-        public Staff Dev { get; set; }
-        public string DevId { get; set; }
+        public Staff Staff { get; set; }
+        public string StaffId { get; set; }
 
         public App App { get; set; }
         public int AppId { get; set; }

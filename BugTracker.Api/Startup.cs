@@ -135,6 +135,7 @@ namespace BugTracker.Api
             services.AddScoped<IAppRepository, AppRepository>();
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IBugRepository, BugRepository>();
+            services.AddScoped<IStaffAppRepository, StaffAppRepository>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {

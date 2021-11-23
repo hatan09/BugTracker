@@ -28,6 +28,7 @@ namespace BugTracker.Api.Controllers
             _mapper = mapper;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
         {
@@ -44,6 +45,20 @@ namespace BugTracker.Api.Controllers
 
             return Ok(_mapper.Map<ReportDTO>(report));
         }
+
+
+        [HttpGet("{appId}")]
+        public async Task<IActionResult> GetByApp(int appId, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
+
+            var reports = await _reportRepository.FindByApp(appId).ToListAsync(cancellationToken);
+
+            return Ok(_mapper.Map<IEnumerable<ReportDTO>>(reports));
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ReportDTO dto, CancellationToken cancellationToken = default)
