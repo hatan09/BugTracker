@@ -53,6 +53,24 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpGet("{staffId}")]
+        public async Task<IActionResult> GetByStaffId (string staffId, CancellationToken cancellationToken = default)
+        {
+
+            var staff = await _staffManager.FindAll()
+                                    .Where(a => a.Id == staffId)
+                                    .Include(a => a.StaffApps)
+                                    .ThenInclude(sa => sa.App)
+                                    .FirstOrDefaultAsync(cancellationToken);
+
+            if (staff is null) return NotFound();
+
+            var apps = staff.StaffApps.Select(sa => sa.App);
+
+            return Ok(_mapper.Map<IEnumerable<AppDTO>>(apps));
+        }
+
+
         [HttpGet("{name}")]
         public async Task<IActionResult> SearchByName(string name, CancellationToken cancellationToken = default)
         {

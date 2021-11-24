@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BugTracker.Api.DataObjects;
+using BugTracker.Contracts;
 using BugTracker.Core.Entities;
 using BugTracker.Repository;
 using Microsoft.AspNetCore.Http;
@@ -18,13 +19,16 @@ namespace BugTracker.Api.Controllers
     public class StaffController : ControllerBase
     {
         private readonly StaffManager _staffManager;
+        private readonly IAppRepository _appRepository;
         private readonly IMapper _mapper;
 
-        public StaffController(StaffManager staffManager, IMapper mapper)
+        public StaffController(StaffManager staffManager, IAppRepository appRepository, IMapper mapper)
         {
             _staffManager = staffManager;
+            _appRepository = appRepository;
             _mapper = mapper;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken = default)
@@ -33,6 +37,7 @@ namespace BugTracker.Api.Controllers
 
             return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
@@ -43,6 +48,24 @@ namespace BugTracker.Api.Controllers
 
             return Ok(_mapper.Map<GetStaffDTO>(staff));
         }
+
+
+        [HttpGet("{appId}")]
+        public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken)
+        {
+            var app = await  _appRepository.FindAll()
+                                .Where(a => a.Id == appId)
+                                .Include(a => a.StaffApps)
+                                .ThenInclude(sa => sa.Staff)
+                                .FirstOrDefaultAsync(cancellationToken);
+
+            if (app is null)
+                return NotFound();
+            var staffs = app.StaffApps.Select(sa => sa.Staff);
+
+            return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStaffDTO dto)

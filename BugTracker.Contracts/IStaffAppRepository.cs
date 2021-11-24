@@ -12,9 +12,7 @@ namespace BugTracker.Contracts
     {
         public Task<StaffApp> FindByIdAsync(int appId, string staffId, CancellationToken cancellationToken = default);
         public void AssignStaff(App app, Staff staff);
-
         public IQueryable<StaffApp> FindByAppId(int appId, CancellationToken cancellationToken);
-
         public IQueryable<StaffApp> FindByStaffId(string staffId, CancellationToken cancellationToken);
     }
 }

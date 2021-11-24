@@ -35,7 +35,7 @@ namespace BugTracker.Repository
             return user;
         }
 
-        public IQueryable<User> FindAll(Expression<Func<Customer, bool>>? predicate = null)
+        public IQueryable<Customer> FindAll(Expression<Func<Customer, bool>>? predicate = null)
             => Users
                 .Where(u => !u.IsDeleted)
                 .WhereIf(predicate != null, predicate!);

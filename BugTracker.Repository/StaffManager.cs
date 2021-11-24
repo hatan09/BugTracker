@@ -35,7 +35,7 @@ namespace BugTracker.Repository
             return staff;
         }
 
-        public IQueryable<User> FindAll(Expression<Func<Staff, bool>>? predicate = null)
+        public IQueryable<Staff> FindAll(Expression<Func<Staff, bool>>? predicate = null)
             => Users
                 .Where(s => !s.IsDeleted)
                 .WhereIf(predicate != null, predicate!);
