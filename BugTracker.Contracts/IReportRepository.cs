@@ -10,6 +10,6 @@ namespace BugTracker.Contracts
     public interface IReportRepository : IBaseRepository<Report>
     {
         public IQueryable<Report> FindByApp(int appId);
-        
+        public IQueryable<Report> FindByBug(int bugId);
     }
 }

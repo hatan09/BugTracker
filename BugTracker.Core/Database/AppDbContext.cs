@@ -87,6 +87,11 @@ namespace BugTracker.Core.Database
                     .WithMany(cus => cus.Reports)
                     .HasForeignKey(rp => rp.CustomerId)
                     .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(rp => rp.Bug)
+                    .WithMany(bug => bug.Reports)
+                    .HasForeignKey(rp => rp.BugId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Bug>(entity =>

@@ -19,12 +19,14 @@ namespace BugTracker.Api.Controllers
     {
         private readonly IReportRepository _reportRepository;
         private readonly IAppRepository _appRepository;
+        private readonly IBugRepository _bugRepository;
         private readonly IMapper _mapper;
 
-        public ReportController(IReportRepository reportRepository, IAppRepository appRepository, IMapper mapper)
+        public ReportController(IReportRepository reportRepository, IAppRepository appRepository, IBugRepository bugRepository, IMapper mapper)
         {
             _reportRepository = reportRepository;
             _appRepository = appRepository;
+            _bugRepository = bugRepository;
             _mapper = mapper;
         }
 
@@ -48,13 +50,26 @@ namespace BugTracker.Api.Controllers
 
 
         [HttpGet("{appId}")]
-        public async Task<IActionResult> GetByApp(int appId, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
             if (app is null)
                 return BadRequest(new { message = "App not found" });
 
             var reports = await _reportRepository.FindByApp(appId).ToListAsync(cancellationToken);
+
+            return Ok(_mapper.Map<IEnumerable<ReportDTO>>(reports));
+        }
+
+
+        [HttpGet("{bugId}")]
+        public async Task<IActionResult> GetByBugId(int bugId, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(bugId, cancellationToken);
+            if (bug is null)
+                return BadRequest(new { message = "Bug not found" });
+
+            var reports = await _reportRepository.FindByBug(bugId).ToListAsync(cancellationToken);
 
             return Ok(_mapper.Map<IEnumerable<ReportDTO>>(reports));
         }

@@ -15,5 +15,8 @@ namespace BugTracker.Repository
 
         public IQueryable<Report> FindByApp(int appId)
             => FindAll(rpt => rpt.AppId == appId);
+
+        public IQueryable<Report> FindByBug(int bugId)
+            => FindAll(rpt => rpt.BugId == bugId);
     }
 }

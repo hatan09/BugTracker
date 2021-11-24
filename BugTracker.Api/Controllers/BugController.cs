@@ -19,12 +19,14 @@ namespace BugTracker.Api.Controllers
     {
         private readonly IBugRepository _bugRepository;
         private readonly IAppRepository _appRepository;
+        private readonly IReportRepository _reportRepository;
         private readonly IMapper _mapper;
 
-        public BugController(IBugRepository bugRepository, IAppRepository appRepository, IMapper mapper)
+        public BugController(IBugRepository bugRepository, IAppRepository appRepository, IReportRepository reportRepository, IMapper mapper)
         {
             _bugRepository = bugRepository;
             _appRepository = appRepository;
+            _reportRepository = reportRepository;
             _mapper = mapper;
         }
 
@@ -47,8 +49,8 @@ namespace BugTracker.Api.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetByApp(int appId, CancellationToken cancellationToken = default)
+        [HttpGet("{appId}")]
+        public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
             if (app is null)
@@ -59,8 +61,8 @@ namespace BugTracker.Api.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetByServerity(int appId, ServerityLevel serverityLevel, CancellationToken cancellationToken = default)
+        [HttpGet("{appId}")]
+        public async Task<IActionResult> GetByServerity(int appId, [FromBody] ServerityLevel serverityLevel, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
             if (app is null)
@@ -71,8 +73,8 @@ namespace BugTracker.Api.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetByStatus(int appId, ProgressStatus progressStatus, CancellationToken cancellationToken = default)
+        [HttpGet("{appId}")]
+        public async Task<IActionResult> GetByStatus(int appId, [FromBody] ProgressStatus progressStatus, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
             if (app is null)
@@ -83,15 +85,36 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpGet("{reportId}")]
+        public async Task<IActionResult> GetByReportId(int reportId, CancellationToken cancellationToken = default)
+        {
+            var report = await _reportRepository.FindAll()
+                                        .Where(rp => rp.Id == reportId)
+                                        .Include(rp => rp.Bug)
+                                        .FirstOrDefaultAsync(cancellationToken);
+
+            if (report is null)
+                return NotFound();
+
+            var bug = report.Bug;
+            return Ok(_mapper.Map<BugDTO>(bug));
+        }
+
+
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BugDTO dto, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Create([FromBody] CreateBugDTO dto, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(dto.AppId, cancellationToken);
             if (app is null)
                 return BadRequest(new { message = "App not found" });
 
             var bug = _mapper.Map<Bug>(dto);
-            
+            foreach(var id in dto.ReportIDs)
+            {
+                var report = await _reportRepository.FindByIdAsync(id, cancellationToken);
+                if (report is not null)
+                    bug.Reports.Add(report);
+            }
 
             _bugRepository.Add(bug);
             await _bugRepository.SaveChangesAsync(cancellationToken);

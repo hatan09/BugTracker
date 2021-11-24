@@ -16,5 +16,8 @@ namespace BugTracker.Core.Entities
 
         public int AppId { get; set; }
         public App App { get; set; }
+
+        public int BugId { get; set; }
+        public Bug Bug { get; set; }
     }
 }

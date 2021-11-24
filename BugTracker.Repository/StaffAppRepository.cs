@@ -27,11 +27,5 @@ namespace BugTracker.Repository
 
         public async Task<StaffApp> FindByIdAsync(int appId, string staffId, CancellationToken cancellationToken = default)
             => await _dbSet.FindAsync(appId, staffId);
-
-        public IQueryable<StaffApp> FindByAppId(int appId, CancellationToken cancellationToken)
-            => FindAll(sa => sa.AppId == appId);
-
-        public IQueryable<StaffApp> FindByStaffId(string staffId, CancellationToken cancellationToken)
-            => FindAll(sa => sa.StaffId == staffId);
     }
 }
