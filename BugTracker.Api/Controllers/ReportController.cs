@@ -85,7 +85,7 @@ namespace BugTracker.Api.Controllers
             var report = _mapper.Map<Report>(dto);
 
             _reportRepository.Add(report);
-            await _appRepository.SaveChangesAsync(cancellationToken);
+            await _reportRepository.SaveChangesAsync(cancellationToken);
 
             return CreatedAtAction(nameof(Get), new { report.Id }, _mapper.Map<ReportDTO>(report));
         }
