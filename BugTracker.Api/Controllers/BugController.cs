@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BugTracker.Api.DataObjects;
+using BugTracker.Api.Models;
 using BugTracker.Contracts;
 using BugTracker.Core.Entities;
+using BugTracker.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +20,15 @@ namespace BugTracker.Api.Controllers
     public class BugController : ControllerBase
     {
         private readonly IBugRepository _bugRepository;
+        private readonly StaffManager _staffManager;
         private readonly IAppRepository _appRepository;
         private readonly IReportRepository _reportRepository;
         private readonly IMapper _mapper;
 
-        public BugController(IBugRepository bugRepository, IAppRepository appRepository, IReportRepository reportRepository, IMapper mapper)
+        public BugController(IBugRepository bugRepository, IAppRepository appRepository, IReportRepository reportRepository, IMapper mapper, StaffManager staffManager)
         {
             _bugRepository = bugRepository;
+            _staffManager = staffManager;
             _appRepository = appRepository;
             _reportRepository = reportRepository;
             _mapper = mapper;
@@ -131,6 +135,46 @@ namespace BugTracker.Api.Controllers
                 return NotFound();
 
             _mapper.Map(dto, bug);
+            _bugRepository.Update(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> AssignStaff([FromBody] UpdateStaffBugModel model, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            foreach(var id in model.StaffId)
+            {
+                var staff = await _staffManager.FindByIdAsync(id);
+                if(staff is not null)
+                    bug.Staffs.Add(staff);
+            }
+            
+            _bugRepository.Update(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> RemoveStaff([FromBody] UpdateStaffBugModel model, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            foreach (var id in model.StaffId)
+            {
+                var staff = await _staffManager.FindByIdAsync(id);
+                if (staff is not null)
+                    bug.Staffs.Remove(staff);
+            }
+
             _bugRepository.Update(bug);
             await _bugRepository.SaveChangesAsync(cancellationToken);
             return NoContent();
