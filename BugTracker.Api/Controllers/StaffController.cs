@@ -20,12 +20,14 @@ namespace BugTracker.Api.Controllers
     {
         private readonly StaffManager _staffManager;
         private readonly IAppRepository _appRepository;
+        private readonly IBugRepository _bugRepository;
         private readonly IMapper _mapper;
 
-        public StaffController(StaffManager staffManager, IAppRepository appRepository, IMapper mapper)
+        public StaffController(StaffManager staffManager, IAppRepository appRepository, IBugRepository bugRepository, IMapper mapper)
         {
             _staffManager = staffManager;
             _appRepository = appRepository;
+            _bugRepository = bugRepository;
             _mapper = mapper;
         }
 
@@ -62,6 +64,22 @@ namespace BugTracker.Api.Controllers
             if (app is null)
                 return NotFound();
             var staffs = app.StaffApps.Select(sa => sa.Staff);
+
+            return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
+        }
+
+
+        [HttpGet("{bugId}")]
+        public async Task<IActionResult> GetByBugId(int bugId, CancellationToken cancellationToken)
+        {
+            var bug = await _bugRepository.FindAll().Where(bug => bug.Id == bugId).Include(bug => bug.Staffs).FirstOrDefaultAsync(cancellationToken);
+
+            if (bug is null)
+                return BadRequest(" No Bug Found ");
+
+            var staffs = bug.Staffs;
+            if (staffs is null)
+                return NotFound();
 
             return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
         }
