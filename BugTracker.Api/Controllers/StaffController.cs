@@ -62,8 +62,8 @@ namespace BugTracker.Api.Controllers
                 .Include(app => app.Staffs)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (app is null || app.Staffs.Count == 0)
-                return NotFound();
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
 
             return Ok(_mapper.Map<IEnumerable<StaffDTO>>(app.Staffs));
         }
@@ -80,11 +80,7 @@ namespace BugTracker.Api.Controllers
             if (bug is null)
                 return BadRequest(" No Bug Found ");
 
-            var staffs = bug.Staffs;
-            if (staffs is null)
-                return NotFound();
-
-            return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
+            return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(bug.Staffs));
         }
 
 

@@ -65,6 +65,21 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpGet("{staffId}")]
+        public async Task<IActionResult> GetByStaffId(string staffId, CancellationToken cancellationToken = default)
+        {
+            var staff = await _staffManager.FindAll()
+                .Where(stf => stf.Id.Equals(staffId))
+                .Include(stf => stf.Bugs)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (staff is null)
+                return BadRequest(new { message = "Staff not found" });
+
+            return Ok(_mapper.Map<IEnumerable<BugDTO>>(staff.Bugs));
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> GetByServerity([FromBody] FindWithEnumValueModel model, CancellationToken cancellationToken = default)
         {

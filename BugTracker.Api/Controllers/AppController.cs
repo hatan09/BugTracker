@@ -59,10 +59,25 @@ namespace BugTracker.Api.Controllers
                 .Include(stf => stf.Apps)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (staff is null || staff.Apps.Count == 0)
+            if (staff is null)
                 return NotFound();
 
             return Ok(_mapper.Map<IEnumerable<AppDTO>>(staff.Apps));
+        }
+
+
+        [HttpGet("{companyId}")]
+        public async Task<IActionResult> GetByCompanyId(int companyId, CancellationToken cancellationToken = default)
+        {
+            var company = await _companyRepository.FindAll()
+                .Where(cpn => cpn.Id == companyId)
+                .Include(cpn => cpn.Apps)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (company is null)
+                return BadRequest(new { message = "Company not found" });
+
+            return Ok(_mapper.Map<IEnumerable<AppDTO>>(company.Apps));
         }
 
 
