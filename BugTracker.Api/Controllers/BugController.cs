@@ -181,6 +181,46 @@ namespace BugTracker.Api.Controllers
         }
 
 
+        [HttpPut]
+        public async Task<IActionResult> AddReport([FromBody] UpdateBugReportModel model, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            foreach (var id in model.ReportIds)
+            {
+                var report = await _reportRepository.FindByIdAsync(id, cancellationToken);
+                if (report is not null)
+                    bug.Reports.Add(report);
+            }
+
+            _bugRepository.Update(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> RemoveReport([FromBody] UpdateBugReportModel model, CancellationToken cancellationToken = default)
+        {
+            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            if (bug is null)
+                return NotFound();
+
+            foreach (var id in model.ReportIds)
+            {
+                var report = await _reportRepository.FindByIdAsync(id, cancellationToken);
+                if (report is not null)
+                    bug.Reports.Remove(report);
+            }
+
+            _bugRepository.Update(bug);
+            await _bugRepository.SaveChangesAsync(cancellationToken);
+            return NoContent();
+        }
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
