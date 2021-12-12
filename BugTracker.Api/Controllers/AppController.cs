@@ -22,14 +22,12 @@ namespace BugTracker.Api.Controllers
         private readonly ICompanyRepository _companyRepository;
         private readonly IAppRepository _appRepository;
         private readonly StaffManager _staffManager;
-        private readonly IStaffAppRepository _staffAppRepository;
         private readonly IMapper _mapper;
 
-        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, StaffManager staffManager, IStaffAppRepository staffAppRepository, IMapper mapper)
+        public AppController(ICompanyRepository companyRepository, IAppRepository appRepository, StaffManager staffManager, IMapper mapper)
         {
             _companyRepository = companyRepository;
             _appRepository = appRepository;
-            _staffAppRepository = staffAppRepository;
             _staffManager = staffManager;
             _mapper = mapper;
         }
@@ -56,18 +54,15 @@ namespace BugTracker.Api.Controllers
         [HttpGet("{staffId}")]
         public async Task<IActionResult> GetByStaffId (string staffId, CancellationToken cancellationToken = default)
         {
-
             var staff = await _staffManager.FindAll()
-                                    .Where(a => a.Id == staffId)
-                                    .Include(a => a.StaffApps)
-                                    .ThenInclude(sa => sa.App)
-                                    .FirstOrDefaultAsync(cancellationToken);
+                .Where(stf => stf.Id.Equals(staffId))
+                .Include(stf => stf.Apps)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            if (staff is null) return NotFound();
+            if (staff is null || staff.Apps.Count == 0)
+                return NotFound();
 
-            var apps = staff.StaffApps.Select(sa => sa.App);
-
-            return Ok(_mapper.Map<IEnumerable<AppDTO>>(apps));
+            return Ok(_mapper.Map<IEnumerable<AppDTO>>(staff.Apps));
         }
 
 
@@ -102,17 +97,18 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> AssignStaff(int appId, List<string> staffIds, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
-            if (app is null) return BadRequest(" App not found ");
+            if(app is null)
+                return BadRequest(new { message = "App not found" });
 
-            foreach(var staffId in staffIds)
+            foreach(var id in staffIds)
             {
-                var staff = await _staffManager.FindByIdAsync(staffId);
-
-                if (app is not null && staff is not null)
-                    _staffAppRepository.AssignStaff(app, staff);
+                var staff = await _staffManager.FindByIdAsync(id);
+                if (staff is not null)
+                    app.Staffs.Add(staff);
             }
-            
-            await _staffAppRepository.SaveChangesAsync(cancellationToken);
+
+            _appRepository.Update(app);
+            await _appRepository.SaveChangesAsync(cancellationToken);
 
             return NoContent();
         }
@@ -133,14 +129,16 @@ namespace BugTracker.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateLeader([FromBody] UpdateStaffAppModel model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> UpdateLeader([FromBody] UpdateLeaderModel model, CancellationToken cancellationToken = default)
         {
-            var staffApp = await _staffAppRepository.FindByIdAsync(model.AppId, model.StaffId, cancellationToken);
-            if (staffApp is null) return NotFound();
+            var app = await _appRepository.FindByIdAsync(model.AppId);
+            if(app is null)
+                return BadRequest(new { message = "App not found" });
 
-            staffApp.IsLeader = model.IsLeader;
-            _staffAppRepository.Update(staffApp);
-            await _staffAppRepository.SaveChangesAsync(cancellationToken);
+            app.LeaderId = model.LeaderId;
+
+            _appRepository.Update(app);
+            await _appRepository.SaveChangesAsync(cancellationToken);
 
             return NoContent();
         }

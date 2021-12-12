@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTracker.Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211123121019_staff-id")]
-    partial class staffid
+    [Migration("20211212005439_first-init")]
+    partial class firstinit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace BugTracker.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("AppStaff", b =>
+                {
+                    b.Property<int>("AppsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StaffsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("AppsId", "StaffsId");
+
+                    b.HasIndex("StaffsId");
+
+                    b.ToTable("AppStaff");
+                });
 
             modelBuilder.Entity("BugStaff", b =>
                 {
@@ -48,6 +63,9 @@ namespace BugTracker.Core.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
+
+                    b.Property<string>("LeaderId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogoURL")
                         .HasColumnType("nvarchar(max)");
@@ -152,7 +170,10 @@ namespace BugTracker.Core.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AppId")
+                    b.Property<int?>("AppId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BugId")
                         .HasColumnType("int");
 
                     b.Property<string>("CustomerId")
@@ -167,6 +188,8 @@ namespace BugTracker.Core.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppId");
+
+                    b.HasIndex("BugId");
 
                     b.HasIndex("CustomerId");
 
@@ -213,24 +236,6 @@ namespace BugTracker.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
-                });
-
-            modelBuilder.Entity("BugTracker.Core.Entities.StaffApp", b =>
-                {
-                    b.Property<int>("AppId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StaffId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsLeader")
-                        .HasColumnType("bit");
-
-                    b.HasKey("AppId", "StaffId");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("StaffApp");
                 });
 
             modelBuilder.Entity("BugTracker.Core.Entities.User", b =>
@@ -470,6 +475,21 @@ namespace BugTracker.Core.Migrations
                     b.ToTable("Staffs");
                 });
 
+            modelBuilder.Entity("AppStaff", b =>
+                {
+                    b.HasOne("BugTracker.Core.Entities.App", null)
+                        .WithMany()
+                        .HasForeignKey("AppsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BugTracker.Core.Entities.Staff", null)
+                        .WithMany()
+                        .HasForeignKey("StaffsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BugStaff", b =>
                 {
                     b.HasOne("BugTracker.Core.Entities.Bug", null)
@@ -519,37 +539,21 @@ namespace BugTracker.Core.Migrations
                 {
                     b.HasOne("BugTracker.Core.Entities.App", "App")
                         .WithMany("Reports")
-                        .HasForeignKey("AppId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AppId");
+
+                    b.HasOne("BugTracker.Core.Entities.Bug", "Bug")
+                        .WithMany("Reports")
+                        .HasForeignKey("BugId");
 
                     b.HasOne("BugTracker.Core.Entities.Customer", "Customer")
                         .WithMany("Reports")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("App");
+
+                    b.Navigation("Bug");
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("BugTracker.Core.Entities.StaffApp", b =>
-                {
-                    b.HasOne("BugTracker.Core.Entities.App", "App")
-                        .WithMany("StaffApps")
-                        .HasForeignKey("AppId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BugTracker.Core.Entities.Staff", "Staff")
-                        .WithMany("StaffApps")
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("App");
-
-                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("BugTracker.Core.Entities.UserRole", b =>
@@ -657,15 +661,18 @@ namespace BugTracker.Core.Migrations
 
             modelBuilder.Entity("BugTracker.Core.Entities.Staff", b =>
                 {
-                    b.HasOne("BugTracker.Core.Entities.Company", null)
+                    b.HasOne("BugTracker.Core.Entities.Company", "Company")
                         .WithMany("Staffs")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("BugTracker.Core.Entities.User", null)
                         .WithOne()
                         .HasForeignKey("BugTracker.Core.Entities.Staff", "Id")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("BugTracker.Core.Entities.App", b =>
@@ -673,8 +680,11 @@ namespace BugTracker.Core.Migrations
                     b.Navigation("Bugs");
 
                     b.Navigation("Reports");
+                });
 
-                    b.Navigation("StaffApps");
+            modelBuilder.Entity("BugTracker.Core.Entities.Bug", b =>
+                {
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("BugTracker.Core.Entities.Company", b =>
@@ -702,11 +712,6 @@ namespace BugTracker.Core.Migrations
             modelBuilder.Entity("BugTracker.Core.Entities.Customer", b =>
                 {
                     b.Navigation("Reports");
-                });
-
-            modelBuilder.Entity("BugTracker.Core.Entities.Staff", b =>
-                {
-                    b.Navigation("StaffApps");
                 });
 #pragma warning restore 612, 618
         }

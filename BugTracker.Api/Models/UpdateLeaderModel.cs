@@ -5,10 +5,9 @@ using System.Threading.Tasks;
 
 namespace BugTracker.Api.Models
 {
-    public class UpdateStaffAppModel
+    public class UpdateLeaderModel
     {
-        public bool IsLeader { get; set; } = false;
         public int AppId { get; set; }
-        public string StaffId { get; set; }
+        public string LeaderId { get; set; }
     }
 }

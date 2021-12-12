@@ -65,26 +65,26 @@ namespace BugTracker.Api.Controllers
         }
 
 
-        [HttpGet("{appId}")]
-        public async Task<IActionResult> GetByServerity(int appId, [FromBody] ServerityLevel serverityLevel, CancellationToken cancellationToken = default)
+        [HttpPost]
+        public async Task<IActionResult> GetByServerity([FromBody] FindWithEnumValueModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            var app = await _appRepository.FindByIdAsync(model.Id, cancellationToken);
             if (app is null)
                 return BadRequest(new { message = "App not found" });
 
-            var bugs = await _bugRepository.FindByServerity(appId, serverityLevel).ToListAsync(cancellationToken);
+            var bugs = await _bugRepository.FindByServerity(model.Id, model.ServerityLevel).ToListAsync(cancellationToken);
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
         }
 
 
-        [HttpGet("{appId}")]
-        public async Task<IActionResult> GetByStatus(int appId, [FromBody] ProgressStatus progressStatus, CancellationToken cancellationToken = default)
+        [HttpPost]
+        public async Task<IActionResult> GetByStatus([FromBody] FindWithEnumValueModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            var app = await _appRepository.FindByIdAsync(model.Id, cancellationToken);
             if (app is null)
                 return BadRequest(new { message = "App not found" });
 
-            var bugs = await _bugRepository.FindByStatus(appId, progressStatus).ToListAsync(cancellationToken);
+            var bugs = await _bugRepository.FindByStatus(model.Id, model.ProgressStatus).ToListAsync(cancellationToken);
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
         }
 

@@ -37,6 +37,7 @@ namespace BugTracker.Api.DataObjects
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
             CreateMap<CreateStaffDTO, Staff>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.CompanyId, opt => opt.Ignore())
                 .ForMember(ent => ent.Birthdate, o => o.MapFrom(dto => DateTime.Parse(dto.Birthdate, null, DateTimeStyles.AssumeUniversal)));
             CreateMap<Staff, GetStaffDTO>();
 
@@ -47,7 +48,8 @@ namespace BugTracker.Api.DataObjects
 
             CreateMap<App, AppDTO>();
             CreateMap<AppDTO, App>()
-                .ForMember(ent => ent.Id, opt => opt.Ignore());
+                .ForMember(ent => ent.Id, opt => opt.Ignore())
+                .ForMember(ent => ent.LeaderId, opt => opt.Ignore());
             CreateMap<CreateAppDTO, App>()
                 .ForMember(ent => ent.Id, opt => opt.Ignore());
 

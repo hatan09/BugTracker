@@ -16,6 +16,8 @@ namespace BugTracker.Api.DataObjects
 
         [Required]
         public int CompanyId { get; set; }
+
+        public string LeaderId { get; set; }
     }
 
     public class CreateAppDTO : AppDTO

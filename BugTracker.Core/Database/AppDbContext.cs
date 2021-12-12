@@ -44,20 +44,12 @@ namespace BugTracker.Core.Database
                     .OnDelete(DeleteBehavior.Cascade);
             });
 
-
-            modelBuilder.Entity<StaffApp>(entity =>
+            modelBuilder.Entity<Staff>(entity =>
             {
-                entity.HasOne(sa => sa.Staff)
-                    .WithMany(stf => stf.StaffApps)
-                    .HasForeignKey(sa => sa.StaffId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasOne(sa => sa.App)
-                    .WithMany(app => app.StaffApps)
-                    .HasForeignKey(sa => sa.AppId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                entity.HasKey(sa => new { sa.AppId, sa.StaffId });
+                entity.HasOne(stf => stf.Company)
+                    .WithMany(cpn => cpn.Staffs)
+                    .HasForeignKey(stf => stf.CompanyId)
+                    .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -81,12 +73,12 @@ namespace BugTracker.Core.Database
                 entity.HasOne(rp => rp.App)
                     .WithMany(app => app.Reports)
                     .HasForeignKey(rp => rp.AppId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(rp => rp.Customer)
                     .WithMany(cus => cus.Reports)
                     .HasForeignKey(rp => rp.CustomerId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(rp => rp.Bug)
                     .WithMany(bug => bug.Reports)
@@ -98,11 +90,9 @@ namespace BugTracker.Core.Database
             {
                 entity.HasOne(bug => bug.App)
                     .WithMany(app => app.Bugs)
-                    .HasForeignKey(rp => rp.AppId)
+                    .HasForeignKey(bug => bug.AppId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
-
         }
     }
 }

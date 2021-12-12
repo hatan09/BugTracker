@@ -16,6 +16,8 @@ namespace BugTracker.Api.DataObjects
 
         public string? FullName { get; set; } = string.Empty;
 
+        public int CompanyId { get; set; }
+
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
@@ -24,7 +26,9 @@ namespace BugTracker.Api.DataObjects
     [ModelBinder(typeof(MultipleSourcesModelBinder<GetStaffDTO>))]
     public class GetStaffDTO : BaseDTO<string>
     {
+        public string? UserName { get; set; } = string.Empty;
         public string FullName { get; set; } = string.Empty;
+        public int CompanyId { get; set; }
         public string? Email { get; set; }
     }
 
@@ -36,6 +40,8 @@ namespace BugTracker.Api.DataObjects
         public string? Password { get; set; } = string.Empty;
 
         public string? FullName { get; set; } = string.Empty;
+
+        public int CompanyId { get; set; }
 
         [Required]
         [EmailAddress]

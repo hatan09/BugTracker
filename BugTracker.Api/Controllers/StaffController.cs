@@ -20,13 +20,15 @@ namespace BugTracker.Api.Controllers
     {
         private readonly StaffManager _staffManager;
         private readonly IAppRepository _appRepository;
+        private readonly ICompanyRepository _companyRepository;
         private readonly IBugRepository _bugRepository;
         private readonly IMapper _mapper;
 
-        public StaffController(StaffManager staffManager, IAppRepository appRepository, IBugRepository bugRepository, IMapper mapper)
+        public StaffController(StaffManager staffManager, IAppRepository appRepository, ICompanyRepository companyRepository, IBugRepository bugRepository, IMapper mapper)
         {
             _staffManager = staffManager;
             _appRepository = appRepository;
+            _companyRepository = companyRepository;
             _bugRepository = bugRepository;
             _mapper = mapper;
         }
@@ -55,24 +57,25 @@ namespace BugTracker.Api.Controllers
         [HttpGet("{appId}")]
         public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken)
         {
-            var app = await  _appRepository.FindAll()
-                                .Where(a => a.Id == appId)
-                                .Include(a => a.StaffApps)
-                                .ThenInclude(sa => sa.Staff)
-                                .FirstOrDefaultAsync(cancellationToken);
+            var app = await _appRepository.FindAll()
+                .Where(app => app.Id == appId)
+                .Include(app => app.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
 
-            if (app is null)
+            if (app is null || app.Staffs.Count == 0)
                 return NotFound();
-            var staffs = app.StaffApps.Select(sa => sa.Staff);
 
-            return Ok(_mapper.Map<IEnumerable<GetStaffDTO>>(staffs));
+            return Ok(_mapper.Map<IEnumerable<StaffDTO>>(app.Staffs));
         }
 
 
         [HttpGet("{bugId}")]
         public async Task<IActionResult> GetByBugId(int bugId, CancellationToken cancellationToken)
         {
-            var bug = await _bugRepository.FindAll().Where(bug => bug.Id == bugId).Include(bug => bug.Staffs).FirstOrDefaultAsync(cancellationToken);
+            var bug = await _bugRepository.FindAll()
+                .Where(bug => bug.Id == bugId)
+                .Include(bug => bug.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (bug is null)
                 return BadRequest(" No Bug Found ");
@@ -86,9 +89,14 @@ namespace BugTracker.Api.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateStaffDTO dto)
+        public async Task<IActionResult> Create([FromBody] CreateStaffDTO dto, CancellationToken cancellationToken)
         {
+            var company = await _companyRepository.FindByIdAsync(dto.CompanyId, cancellationToken);
+            if (company is null)
+                return BadRequest(new { message = "Company not found" });
+
             var staff = _mapper.Map<Staff>(dto);
+            staff.Company = company;
 
             var result = await _staffManager.CreateAsync(staff, dto.Password);
             if (!result.Succeeded)
