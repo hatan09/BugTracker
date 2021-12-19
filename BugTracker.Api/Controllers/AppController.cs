@@ -112,9 +112,12 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> AssignStaff(UpdateStaffAppModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(model.AppId, cancellationToken);
-            if(app is null)
-                return BadRequest(new { message = "App not found" });
+            var app = await _appRepository.FindAll()
+                .Where(app => app.Id == model.AppId)
+                .Include(app => app.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             foreach(var id in model.StaffIds)
             {
@@ -134,9 +137,12 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> RemoveStaff(UpdateStaffAppModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(model.AppId, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            var app = await _appRepository.FindAll()
+                .Where(app => app.Id == model.AppId)
+                .Include(app => app.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             foreach (var id in model.StaffIds)
             {
@@ -170,8 +176,11 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> UpdateLeader([FromBody] UpdateLeaderModel model, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(model.AppId);
-            if(app is null)
-                return BadRequest(new { message = "App not found" });
+            if(app is null || app.IsDeleted)
+                return BadRequest(new
+                {
+                    message = "App not found or deleted"
+                });
 
             app.LeaderId = model.LeaderId;
 

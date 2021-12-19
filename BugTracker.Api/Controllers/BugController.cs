@@ -159,7 +159,10 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> AssignStaff([FromBody] UpdateStaffBugModel model, CancellationToken cancellationToken = default)
         {
-            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            var bug = await _bugRepository.FindAll()
+                .Where(bug => bug.Id == model.BugId)
+                .Include(bug => bug.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
             if (bug is null)
                 return BadRequest(new { message = "Bug not found" });
 
@@ -180,7 +183,10 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> RemoveStaff([FromBody] UpdateStaffBugModel model, CancellationToken cancellationToken = default)
         {
-            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            var bug = await _bugRepository.FindAll()
+                .Where(bug => bug.Id == model.BugId)
+                .Include(bug => bug.Staffs)
+                .FirstOrDefaultAsync(cancellationToken);
             if (bug is null)
                 return BadRequest(new { message = "Bug not found" });
 
@@ -200,7 +206,10 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> AddReport([FromBody] UpdateBugReportModel model, CancellationToken cancellationToken = default)
         {
-            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            var bug = await _bugRepository.FindAll()
+                .Where(bug => bug.Id == model.BugId)
+                .Include(bug => bug.Reports)
+                .FirstOrDefaultAsync(cancellationToken);
             if (bug is null)
                 return BadRequest(new { message = "Bug not found" });
 
@@ -220,7 +229,10 @@ namespace BugTracker.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> RemoveReport([FromBody] UpdateBugReportModel model, CancellationToken cancellationToken = default)
         {
-            var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
+            var bug = await _bugRepository.FindAll()
+                .Where(bug => bug.Id == model.BugId)
+                .Include(bug => bug.Reports)
+                .FirstOrDefaultAsync(cancellationToken);
             if (bug is null)
                 return BadRequest(new
                 {
