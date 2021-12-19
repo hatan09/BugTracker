@@ -53,8 +53,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var reports = await _reportRepository.FindByApp(appId).ToListAsync(cancellationToken);
 
@@ -79,8 +79,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> Create([FromBody] ReportDTO dto, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(dto.AppId, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var report = _mapper.Map<Report>(dto);
 

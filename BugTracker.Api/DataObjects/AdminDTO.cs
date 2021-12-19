@@ -27,5 +27,7 @@ namespace BugTracker.Api.DataObjects
         public string Birthdate { get; set; } = string.Empty;
 
         public string PhoneNumber { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; }
     }
 }

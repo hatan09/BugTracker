@@ -19,6 +19,8 @@ namespace BugTracker.Api.DataObjects
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; }
     }
 
     [ModelBinder(typeof(MultipleSourcesModelBinder<GetCustomerDTO>))]
@@ -26,6 +28,7 @@ namespace BugTracker.Api.DataObjects
     {
         public string FullName { get; set; } = string.Empty;
         public string? Email { get; set; }
+        public bool IsDeleted { get; set; }
     }
 
     [ModelBinder(typeof(MultipleSourcesModelBinder<CreateCustomerDTO>))]
@@ -42,5 +45,7 @@ namespace BugTracker.Api.DataObjects
         public string Email { get; set; } = string.Empty;
 
         public string Birthdate { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; }
     }
 }

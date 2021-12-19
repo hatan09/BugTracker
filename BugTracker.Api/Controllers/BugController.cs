@@ -57,8 +57,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> GetByAppId(int appId, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var bugs = await _bugRepository.FindByApp(appId).ToListAsync(cancellationToken);
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
@@ -73,8 +73,8 @@ namespace BugTracker.Api.Controllers
                 .Include(stf => stf.Bugs)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (staff is null)
-                return BadRequest(new { message = "Staff not found" });
+            if (staff is null || staff.IsDeleted)
+                return BadRequest(new { message = "Staff not found or deleted" });
 
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(staff.Bugs));
         }
@@ -84,8 +84,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> GetByServerity([FromBody] FindWithEnumValueModel model, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(model.Id, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var bugs = await _bugRepository.FindByServerity(model.Id, model.ServerityLevel).ToListAsync(cancellationToken);
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
@@ -96,8 +96,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> GetByStatus([FromBody] FindWithEnumValueModel model, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(model.Id, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var bugs = await _bugRepository.FindByStatus(model.Id, model.ProgressStatus).ToListAsync(cancellationToken);
             return Ok(_mapper.Map<IEnumerable<BugDTO>>(bugs));
@@ -113,7 +113,7 @@ namespace BugTracker.Api.Controllers
                                         .FirstOrDefaultAsync(cancellationToken);
 
             if (report is null)
-                return NotFound();
+                return BadRequest(new { message = "Report not found" });
 
             var bug = report.Bug;
             return Ok(_mapper.Map<BugDTO>(bug));
@@ -124,8 +124,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CreateBugDTO dto, CancellationToken cancellationToken = default)
         {
             var app = await _appRepository.FindByIdAsync(dto.AppId, cancellationToken);
-            if (app is null)
-                return BadRequest(new { message = "App not found" });
+            if (app is null || app.IsDeleted)
+                return BadRequest(new { message = "App not found or deleted" });
 
             var bug = _mapper.Map<Bug>(dto);
             foreach(var id in dto.ReportIDs)
@@ -161,13 +161,14 @@ namespace BugTracker.Api.Controllers
         {
             var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
             if (bug is null)
-                return NotFound();
+                return BadRequest(new { message = "Bug not found" });
 
-            foreach(var id in model.StaffId)
+            foreach (var id in model.StaffId)
             {
                 var staff = await _staffManager.FindByIdAsync(id);
                 if(staff is not null)
-                    bug.Staffs.Add(staff);
+                    if(!staff.IsDeleted)
+                        bug.Staffs.Add(staff);
             }
             
             _bugRepository.Update(bug);
@@ -181,7 +182,7 @@ namespace BugTracker.Api.Controllers
         {
             var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
             if (bug is null)
-                return NotFound();
+                return BadRequest(new { message = "Bug not found" });
 
             foreach (var id in model.StaffId)
             {
@@ -201,7 +202,7 @@ namespace BugTracker.Api.Controllers
         {
             var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
             if (bug is null)
-                return NotFound();
+                return BadRequest(new { message = "Bug not found" });
 
             foreach (var id in model.ReportIds)
             {
@@ -221,7 +222,10 @@ namespace BugTracker.Api.Controllers
         {
             var bug = await _bugRepository.FindByIdAsync(model.BugId, cancellationToken);
             if (bug is null)
-                return NotFound();
+                return BadRequest(new
+                {
+                    message = "Bug not found"
+                });
 
             foreach (var id in model.ReportIds)
             {

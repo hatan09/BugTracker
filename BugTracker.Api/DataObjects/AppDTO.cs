@@ -18,6 +18,8 @@ namespace BugTracker.Api.DataObjects
         public int CompanyId { get; set; }
 
         public string LeaderId { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 
     public class CreateAppDTO : AppDTO

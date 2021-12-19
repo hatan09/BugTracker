@@ -59,8 +59,8 @@ namespace BugTracker.Api.Controllers
                 .Include(stf => stf.Apps)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (staff is null)
-                return NotFound();
+            if (staff is null || staff.IsDeleted)
+                return BadRequest(new { message = "Staff not found or deleted" });
 
             return Ok(_mapper.Map<IEnumerable<AppDTO>>(staff.Apps));
         }
@@ -74,8 +74,8 @@ namespace BugTracker.Api.Controllers
                 .Include(cpn => cpn.Apps)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (company is null)
-                return BadRequest(new { message = "Company not found" });
+            if (company is null || company.IsDeleted)
+                return BadRequest(new { message = "Company not found or deleted" });
 
             return Ok(_mapper.Map<IEnumerable<AppDTO>>(company.Apps));
         }
@@ -96,10 +96,11 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> Create([FromBody] AppDTO dto, CancellationToken cancellationToken = default)
         {
             var company = await _companyRepository.FindByIdAsync(dto.CompanyId, cancellationToken);
-            if (company is null)
+            if (company is null || company.IsDeleted)
                 return BadRequest(new { message = "Company not found" });
 
             var app = _mapper.Map<App>(dto);
+            app.IsDeleted = false;
 
             _appRepository.Add(app);
             await _appRepository.SaveChangesAsync(cancellationToken);
@@ -119,7 +120,8 @@ namespace BugTracker.Api.Controllers
             {
                 var staff = await _staffManager.FindByIdAsync(id);
                 if (staff is not null)
-                    app.Staffs.Add(staff);
+                    if (!staff.IsDeleted)
+                        app.Staffs.Add(staff);
             }
 
             _appRepository.Update(app);

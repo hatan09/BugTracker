@@ -63,8 +63,8 @@ namespace BugTracker.Api.Controllers
         public async Task<IActionResult> Create([FromBody] CompanyDTO dto, CancellationToken cancellationToken = default)
         {
             var admin = await _adminManager.FindByIdAsync(dto.AdminId);
-            if (admin is null)
-                return BadRequest(new { message = "Admin not found" });
+            if (admin is null || admin.IsDeleted)
+                return BadRequest(new { message = "Admin not found or deleted" });
 
             var company = _mapper.Map<Company>(dto);
             company.IsDeleted = false;
@@ -80,7 +80,7 @@ namespace BugTracker.Api.Controllers
         {
             var company = await _companyRepository.FindByGuidAsync(dto.Guid, cancellationToken);
             if (company is null || company.IsDeleted)
-                return NotFound();
+                return BadRequest(new { message = "Company not found or deleted" });
 
             _mapper.Map(dto, company);
             _companyRepository.Update(company);
@@ -94,7 +94,7 @@ namespace BugTracker.Api.Controllers
         {
             var company = await _companyRepository.FindByGuidAsync(guid, cancellationToken);
             if (company is null || company.IsDeleted)
-                return NotFound();
+                return BadRequest(new { message = "Company not found or deleted" });
 
             company.IsDeleted = true;
             _companyRepository.Update(company);

@@ -22,6 +22,7 @@ namespace BugTracker.Repository
 
         public async Task<Company> FindByGuidAsync(Guid guid, CancellationToken cancellationToken = default)
             => await FindAll(cpn => cpn.Guid.Equals(guid))
+                .Where(cpn => !cpn.IsDeleted)
                 .FirstOrDefaultAsync(cancellationToken);
 
         public override void Delete(Company entity)
