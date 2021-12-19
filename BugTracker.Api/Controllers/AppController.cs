@@ -108,18 +108,39 @@ namespace BugTracker.Api.Controllers
         }
 
 
-        [HttpPost("{appId}")]
-        public async Task<IActionResult> AssignStaff(int appId, List<string> staffIds, CancellationToken cancellationToken = default)
+        [HttpPut]
+        public async Task<IActionResult> AssignStaff(UpdateStaffAppModel model, CancellationToken cancellationToken = default)
         {
-            var app = await _appRepository.FindByIdAsync(appId, cancellationToken);
+            var app = await _appRepository.FindByIdAsync(model.AppId, cancellationToken);
             if(app is null)
                 return BadRequest(new { message = "App not found" });
 
-            foreach(var id in staffIds)
+            foreach(var id in model.StaffIds)
             {
                 var staff = await _staffManager.FindByIdAsync(id);
                 if (staff is not null)
                     app.Staffs.Add(staff);
+            }
+
+            _appRepository.Update(app);
+            await _appRepository.SaveChangesAsync(cancellationToken);
+
+            return NoContent();
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> RemoveStaff(UpdateStaffAppModel model, CancellationToken cancellationToken = default)
+        {
+            var app = await _appRepository.FindByIdAsync(model.AppId, cancellationToken);
+            if (app is null)
+                return BadRequest(new { message = "App not found" });
+
+            foreach (var id in model.StaffIds)
+            {
+                var staff = await _staffManager.FindByIdAsync(id);
+                if (staff is not null)
+                    app.Staffs.Remove(staff);
             }
 
             _appRepository.Update(app);
